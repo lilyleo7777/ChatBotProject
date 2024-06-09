@@ -15,7 +15,7 @@ os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 # Initialize Pinecone
-pinecone.init(api_key=os.environ.get("PINECONE_API_KEY"))
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
 index_name_qa2 = 'adhd-qa2'
 
