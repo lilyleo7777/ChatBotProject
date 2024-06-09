@@ -101,6 +101,7 @@ if "context" not in st.session_state:
     st.session_state.context.append(response)
     with st.chat_message("assistant"):
         st.markdown(response.content)
+    st.session_state.messages.append({"role": "assistant", "content": response.content})
         
 if "messages" not in st.session_state:
     st.session_state.messages = []
