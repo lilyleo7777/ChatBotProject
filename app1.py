@@ -118,7 +118,8 @@ if query := st.chat_input("What is your query?"):
     human_message = HumanMessage(content=query)
     st.write("DEBUG: new context:", new_context)
     st.write("DEBUG: system message:", human_message)
-    
+    st.write("DEBUG: st.session_state.context", st.session_state.context)
+
     st.session_state.context.append(new_context)
     st.session_state.context.append(human_message)
     st.session_state.messages.append({"role": "user", "content": query})
