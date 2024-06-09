@@ -67,20 +67,16 @@ def augment_prompt_qa(query):
     #     top_k=2,
     #     include_values=True
     # )
-    try:
-        results = index_qa2.query(
-            namespace="example-namespace",
-            vector=q_embedding,
+    results = index_qa2.query(
             top_k=3,
+            vector=q_embedding,
             include_values=True
         )
-    except Exception as e:
-        st.write("DEBUG: Pinecone query error:", e)
-        return "Error querying Pinecone index"
-   
+    
     st.write("DEBUG: Pinecone Query Results:", results)
-       
-    top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
+    top_3 = [item["metadata"]['text'] for item in results['matches']]
+
+    # top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
     st.write("DEBUG: Top 3 Matches:", top_3)
 
     source_knowledge = '\n'.join(top_3)
