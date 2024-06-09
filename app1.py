@@ -74,11 +74,11 @@ def augment_prompt_qa(query):
             include_metadata = True
         )
     
-    st.write("DEBUG: Pinecone Query Results:", results)
+    # st.write("DEBUG: Pinecone Query Results:", results)
     # top_3 = [item["metadata"]['text'] for item in results['matches']]
 
     top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
-    st.write("DEBUG: Top 3 Matches:", top_3)
+    # st.write("DEBUG: Top 3 Matches:", top_3)
 
     source_knowledge = '\n'.join(top_3)
 
@@ -91,7 +91,7 @@ def augment_prompt_qa(query):
     {source_knowledge}
 
     Query: {query}"""
-    return source_knowledge
+    return augmented_prompt
 
 # response = random.choice(
 #         [
@@ -133,8 +133,8 @@ if query := st.chat_input("What is your query?"):
   # st.session_state.context.append(human_message)
     st.session_state.messages.append({"role": "user", "content": query})
     response = augment_prompt_qa(query)
-    st.write("DEBUG: Query:", query)
-    st.write("DEBUG: Response:", response)
+    # st.write("DEBUG: Query:", query)
+    # st.write("DEBUG: Response:", response)
         
     with st.chat_message("user"):
         st.markdown(query)
