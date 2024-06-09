@@ -93,6 +93,4 @@ if query := st.chat_input("What is your query?"):
   response = model(st.session_state.context)
 
   with st.chat_message("assistant"):
-    for word in response.content.split():
-      st.markdown(word + " ")
-      time.sleep(0.05)
+    st.markdown(response.content)
