@@ -144,7 +144,7 @@ if query := st.chat_input("What is your query?"):
         for char in response.content:
             displayed_text += char
             message_placeholder.markdown(displayed_text)
-            time.sleep(0.05)  # Adjust typing speed here
+            time.sleep(0.01)  # Adjust typing speed here
 
         # Ensure full response is rendered with HTML formatting
         message_placeholder.markdown(response.content)
