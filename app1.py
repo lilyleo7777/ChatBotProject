@@ -32,7 +32,7 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
 
-# index_name_qa2 = 'adhd-qa2'
+index_name_qa2 = 'adhd-qa2'
 
 index_qa2 = pc.Index(index_name_qa2)
 # time.sleep(1)
