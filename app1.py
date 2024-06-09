@@ -29,27 +29,21 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 def load_embedding_model():
     return SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
 embedding_model = load_embedding_model()
-q = "what is ADHD?"
-q_embedding = embedding_model.embed_query(q)
+# q = "what is ADHD?"
+# q_embedding = embedding_model.embed_query(q)
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name_qa2 = 'adhd-qa2'
 index_qa2 = pc.Index(index_name_qa2)
 
-queried = index_qa2.query(
-    vector = q_embedding,
-    top_k=3,
-    include_values=False,
-    include_metadata=True
-)
-
-# index.query(
-#     namespace="example-namespace",
-#     vector=[0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3],
+# queried = index_qa2.query(
+#     vector = q_embedding,
 #     top_k=3,
-#     include_values=True
+#     include_values=False,
+#     include_metadata=True
 # )
+# top_3 = [match['metadata'].get('text', 'No text metadata found') for match in queried['matches']]
 
 # time.sleep(1)
 
@@ -61,34 +55,37 @@ queried = index_qa2.query(
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
                                temperature=0.3, top_p=0.2)
 
-#function that creates context from top 3 similarities 
-# def augment_prompt_qa(query: str):
-#     # get top 3 results from knowledge base
-#     q_embedding = embedding_model.embed_query(query)
-#     results = index_qa2.query(
-#         namespace="example-namespace",
-#         vector= q,
-#         top_k=3,
-#         include_values=True
-#     )
-#     # get the text from the results
-#     source_knowledge = "\n".join([x.page_content for x in results])
-#     # feed into an augmented prompt
-#     augmented_prompt = f"""Using the contexts below, answer the query.
-
-#     Contexts:
-#     {source_knowledge}
-
-#     Query: {query}"""
-#     return augmented_prompt
-
-response = random.choice(
-        [
-            "Hello there! How can I assist you today?",
-            "Hi, human! Is there anything I can help you with?",
-            "Do you need help?",
-        ]
+# function that creates context from top 3 similarities 
+def augment_prompt_qa(query):
+    # get top 3 results from knowledge base
+    q_embedding = embedding_model.embed_query(query)
+    results = index_qa2.query(
+        namespace="example-namespace",
+        vector= q_embedding,
+        top_k=2,
+        include_values=True
     )
+    top_3 = [match['metadata'].get('text', 'No text metadata found') for match in queried['matches']]
+    source_knowledge = '\n'.join(text_metadata_list)
+
+    # get the text from the results
+    # source_knowledge = "\n".join([x.page_content for x in results])
+    # feed into an augmented prompt
+    augmented_prompt = f"""Using the contexts below, answer the query.
+
+    Contexts:
+    {source_knowledge}
+
+    Query: {query}"""
+    return augmented_prompt
+
+# response = random.choice(
+#         [
+#             "Hello there! How can I assist you today?",
+#             "Hi, human! Is there anything I can help you with?",
+#             "Do you need help?",
+#         ]
+#     )
 # Streamlit app layout
 st.title("ADHD Specialist Australia Clinic Chatbot")
 
@@ -121,6 +118,8 @@ if query := st.chat_input("What is your query?"):
   # st.session_state.context.append(new_context)
   # st.session_state.context.append(human_message)
   st.session_state.messages.append({"role": "user", "content": query})
+  response = augment_prompt_qa(query)
+        
 
   # Display user message in chat message container
   with st.chat_message("user"):
