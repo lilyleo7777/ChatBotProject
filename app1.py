@@ -94,7 +94,9 @@ inital_system_message = "Your role is an assistant for an ADHD specialist clinic
 ADHD Specialists Australia to answer questions people have regarding the clinic and ADHD. \
 You first welcome me and ask how you can help me."
 
-
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+    
 if "context" not in st.session_state:
     st.session_state.context = [HumanMessage(content = inital_system_message)]
     response = model(st.session_state.context)
@@ -103,8 +105,7 @@ if "context" not in st.session_state:
         st.markdown(response.content)
     st.session_state.messages.append({"role": "assistant", "content": response.content})
         
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
