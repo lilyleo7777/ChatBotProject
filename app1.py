@@ -77,7 +77,7 @@ def augment_prompt_qa(query):
     {source_knowledge}
 
     Query: {query}"""
-    return augmented_prompt
+    return source_knowledge
 
 # response = random.choice(
 #         [
