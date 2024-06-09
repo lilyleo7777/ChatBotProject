@@ -117,19 +117,19 @@ if query := st.chat_input("What is your query?"):
 
   # st.session_state.context.append(new_context)
   # st.session_state.context.append(human_message)
-  st.session_state.messages.append({"role": "user", "content": query})
-  response = augment_prompt_qa(query)
+    st.session_state.messages.append({"role": "user", "content": query})
+    response = augment_prompt_qa(query)
         
 
   # Display user message in chat message container
-  with st.chat_message("user"):
-    st.markdown(query)
+    with st.chat_message("user"):
+        st.markdown(query)
 
   # response = model(st.session_state.context)
   # st.session_state.context.append(response)
   # st.session_state.messages.append({"role": "assistant", "content": response.content})
 
-  with st.chat_message("assistant"):
-    st.markdown(response)
+    with st.chat_message("assistant"):
+        st.markdown(response)
       
-  st.session_state.messages.append({"role": "assistant", "content": response})
+st.session_state.messages.append({"role": "assistant", "content": response})
