@@ -12,8 +12,10 @@ from pinecone import Pinecone, ServerlessSpec
 # #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
 #from langchain_community.embeddings import HuggingFaceEmbeddings
 # from langchain.text_splitter import CharacterTextSplitter
-from sentence_transformers import SentenceTransformer
-from langchain.embeddings import SentenceTransformerEmbeddings
+# from sentence_transformers import SentenceTransformer
+# from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
+
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
