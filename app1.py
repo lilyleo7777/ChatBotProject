@@ -7,6 +7,7 @@ import random
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_pinecone import PineconeVectorStore 
 from pinecone import Pinecone, ServerlessSpec
+# import logging
 # from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # from langchain.schema import HumanMessage
 # #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
@@ -28,10 +29,17 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 # encode_kwargs = {'normalize_embeddings': False}
 # embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
 
-embedding_model = SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
+# embedding_model = SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
 
-q = "what is ADHD?"
-q_embedding = embedding_model.embed_query(q)
+# q = "what is ADHD?"
+# q_embedding = embedding_model.embed_query(q)
+
+
+@st.cache_resource
+def load_embedding_model():
+    return SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
+embedding_model = load_embedding_model()
+
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
