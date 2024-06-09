@@ -10,9 +10,10 @@ from pinecone import Pinecone, ServerlessSpec
 # from langchain_google_genai import GoogleGenerativeAIEmbeddings
 # from langchain.schema import HumanMessage
 # #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
-from langchain_community.embeddings import HuggingFaceEmbeddings
+#from langchain_community.embeddings import HuggingFaceEmbeddings
 # from langchain.text_splitter import CharacterTextSplitter
-
+from sentence_transformers import SentenceTransformer
+from langchain.embeddings import SentenceTransformerEmbeddings
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
@@ -20,18 +21,22 @@ os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
-modelPath = "BAAI/bge-large-en-v1.5"
-model_kwargs = {'device': 'cpu'}
-encode_kwargs = {'normalize_embeddings': False}
-embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
+# modelPath = "BAAI/bge-large-en-v1.5"
+# model_kwargs = {'device': 'cpu'}
+# encode_kwargs = {'normalize_embeddings': False}
+# embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
 
+embedding_model = SentenceTransformer('BAAI/bge-large-en-v1.5',)
+
+q = "what is ADHD?"
+q_embedding = sent_transformer.encode(q , normalize_embeddings=False)
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name_qa2 = 'adhd-qa2'
 index_qa2 = pc.Index(index_name_qa2)
 
-q = "what is ADHD?"
+
 # index.query(
 #     namespace="example-namespace",
 #     vector=[0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3],
