@@ -66,7 +66,7 @@ def augment_prompt_qa(query):
         include_values=True
     )
     top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
-    source_knowledge = '\n'.join(text_metadata_list)
+    source_knowledge = '\n'.join(top_3)
 
     # get the text from the results
     # source_knowledge = "\n".join([x.page_content for x in results])
