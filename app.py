@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import pinecone
 import google.generativeai as genai
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -10,7 +11,6 @@ from langchain.text_splitter import CharacterTextSplitter
 from pinecone import Pinecone, ServerlessSpec
 import time
 from langchain_community.vectorstores import Pinecone as PineconeVectorStore
-
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
@@ -23,15 +23,6 @@ loader = TextLoader("./ADHDFAQ.txt")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=10)
 docs = text_splitter.split_documents(documents)
-
-# Extract questions and answers
-questions = []
-qna_pairs = []
-
-for doc in docs:
-    if doc.page_content.startswith('Q:'):
-        questions.append(doc.page_content.split('\n')[0])
-        qna_pairs.append(doc)
 
 #creating embeddings using HuggingFace
 modelPath = "BAAI/bge-large-en-v1.5"
@@ -56,7 +47,7 @@ if index_name_qa2 not in existing_indexes:
         index_name_qa2,
         dimension=1024,  # dimensionality of our embedding model
         metric='cosine',
-        spec=spec
+        spec= ServerlessSpec(cloud="aws", region="us-east-1")
     )
     while not pc.describe_index(index_name_qa2).status['ready']:
         time.sleep(1)
@@ -90,30 +81,48 @@ def augment_prompt_qa(query: str):
 # Streamlit app layout
 st.title("ADHD Specialist Australia Clinic Chatbot")
 
-# Initialising context - System Message
-context = [HumanMessage(content='Your role is an assistant for an ADHD specialist clinic called ADHD Specialists Australia to answer questions people have regarding the clinic and ADHD. You first welcome me and ask how you can help me.')]
-response = model(context)
-context.append(response)
-st.markdown(response.content)
-
 # if "chat_history" not in st.session_state:
 #     st.session_state.chat_history = []
 
-query = st.text_input("Your query:")
 
-if query:
-    human_message = HumanMessage(content=query)
-    new_context = HumanMessage(content=augment_prompt_qa(query))
-    context.append(new_context)
-    context.append(human_message)
-    # st.session_state.chat_history.append(human_message)
 
-    response = model(context)
-    context.append(response)
-    # st.session_state.chat_history.append(response)
+inital_system_message = "Your role is an assistant for an ADHD specialist clinic called \
+ADHD Specialists Australia to answer questions people have regarding the clinic and ADHD. \
+You first welcome me and ask how you can help me."
 
-    st.markdown(response.content)
 
-# for message in st.session_state.chat_history:
-#     st.markdown(message.content)
+if "context" not in st.session_state:
+    st.session_state.context = [HumanMessage(content = inital_system_message)]
+    response = model(st.session_state.context)
+    st.session_state.context.append(response)
+    with st.chat_message("Assistant"):
+        st.markdown(response.content)
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Accept user input
+if query := st.chat_input("What is your query?"):
+  human_message = HumanMessage(content=query)
+  new_context = HumanMessage(content=augment_prompt_qa(query))
+  st.session_state.context.append(new_context)
+  st.session_state.context.append(human_message)
+  st.session_state.messages.append({"role": "user", "content": query})
+
+  # Display user message in chat message container
+  with st.chat_message("user"):
+    st.markdown(query)
+
+  response = model(st.session_state.context)
+
+  with st.chat_message("assistant"):
+    for word in response.content.split():
+      st.markdown(word + " ")
+      time.sleep(0.05)
 
