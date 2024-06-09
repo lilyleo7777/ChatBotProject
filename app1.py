@@ -60,13 +60,29 @@ model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
 def augment_prompt_qa(query):
     # get top 3 results from knowledge base
     q_embedding = embedding_model.embed_query(query)
-    results = index_qa2.query(
-        namespace="example-namespace",
-        vector= q_embedding,
-        top_k=2,
-        include_values=True
-    )
+    st.write("DEBUG: Query Embedding:", q_embedding)
+    # results = index_qa2.query(
+    #     namespace="example-namespace",
+    #     vector= q_embedding,
+    #     top_k=2,
+    #     include_values=True
+    # )
+    try:
+        results = index_qa2.query(
+            namespace="example-namespace",
+            vector=q_embedding,
+            top_k=3,
+            include_values=True
+        )
+    except Exception as e:
+        st.write("DEBUG: Pinecone query error:", e)
+        return "Error querying Pinecone index"
+   
+    st.write("DEBUG: Pinecone Query Results:", results)
+       
     top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
+    st.write("DEBUG: Top 3 Matches:", top_3)
+
     source_knowledge = '\n'.join(top_3)
 
     # get the text from the results
