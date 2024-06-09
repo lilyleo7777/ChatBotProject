@@ -67,7 +67,7 @@ if "context" not in st.session_state:
     st.session_state.context = [HumanMessage(content = inital_system_message)]
     response = model(st.session_state.context)
     st.session_state.context.append(response)
-    with st.chat_message("Assistant"):
+    with st.chat_message("assistant"):
         st.markdown(response.content)
         
 if "messages" not in st.session_state:
@@ -80,8 +80,10 @@ for message in st.session_state.messages:
 
 # Accept user input
 if query := st.chat_input("What is your query?"):
-  human_message = HumanMessage(content=query)
   new_context = HumanMessage(content=augment_prompt_qa(query))
+  human_message = HumanMessage(content=query)
+  
+
   st.session_state.context.append(new_context)
   st.session_state.context.append(human_message)
   st.session_state.messages.append({"role": "user", "content": query})
@@ -91,6 +93,8 @@ if query := st.chat_input("What is your query?"):
     st.markdown(query)
 
   response = model(st.session_state.context)
+  st.session_state.context.append(response)
+  st.session_state.messages.append({"role": "assistant", "content": response.content})
 
   with st.chat_message("assistant"):
     st.markdown(response.content)
