@@ -60,13 +60,7 @@ model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
 def augment_prompt_qa(query):
     # get top 3 results from knowledge base
     q_embedding = embedding_model.embed_query(query)
-    st.write("DEBUG: Query Embedding:", q_embedding)
-    # results = index_qa2.query(
-    #     namespace="example-namespace",
-    #     vector= q_embedding,
-    #     top_k=2,
-    #     include_values=True
-    # )
+    
     results = index_qa2.query(
             top_k=3,
             vector=q_embedding,
@@ -74,17 +68,10 @@ def augment_prompt_qa(query):
             include_metadata = True
         )
     
-    # st.write("DEBUG: Pinecone Query Results:", results)
-    # top_3 = [item["metadata"]['text'] for item in results['matches']]
-
     top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
-    # st.write("DEBUG: Top 3 Matches:", top_3)
 
     source_knowledge = '\n'.join(top_3)
 
-    # get the text from the results
-    # source_knowledge = "\n".join([x.page_content for x in results])
-    # feed into an augmented prompt
     augmented_prompt = f"""Using the contexts below, answer the query.
 
     Contexts:
@@ -108,12 +95,12 @@ ADHD Specialists Australia to answer questions people have regarding the clinic 
 You first welcome me and ask how you can help me."
 
 
-# if "context" not in st.session_state:
-#     st.session_state.context = [HumanMessage(content = inital_system_message)]
-#     response = model(st.session_state.context)
-#     st.session_state.context.append(response)
-#     with st.chat_message("assistant"):
-#         st.markdown(response.content)
+if "context" not in st.session_state:
+    st.session_state.context = [HumanMessage(content = inital_system_message)]
+    response = model(st.session_state.context)
+    st.session_state.context.append(response)
+    with st.chat_message("assistant"):
+        st.markdown(response.content)
         
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -125,23 +112,23 @@ for message in st.session_state.messages:
 
 # Accept user input
 if query := st.chat_input("What is your query?"):
-  # new_context = HumanMessage(content=augment_prompt_qa(query))
-  # human_message = HumanMessage(content=query)
-  
-
-  # st.session_state.context.append(new_context)
-  # st.session_state.context.append(human_message)
+    new_context = HumanMessage(content=augment_prompt_qa(query)) 
+    human_message = HumanMessage(content=query)
+    
+    st.session_state.context.append(new_context)
+    st.session_state.context.append(human_message)
     st.session_state.messages.append({"role": "user", "content": query})
-    response = augment_prompt_qa(query)
+    
+    # response = augment_prompt_qa(query)
     # st.write("DEBUG: Query:", query)
     # st.write("DEBUG: Response:", response)
         
     with st.chat_message("user"):
         st.markdown(query)
-
-  # response = model(st.session_state.context)
-  # st.session_state.context.append(response)
-  # st.session_state.messages.append({"role": "assistant", "content": response.content})
+        
+    response = model(st.session_state.context)
+    st.session_state.context.append(response)
+    st.session_state.messages.append({"role": "assistant", "content": response.content})
 
     with st.chat_message("assistant"):
         st.markdown(response)
