@@ -53,7 +53,7 @@ index_qa2 = pc.Index(index_name_qa2)
 
 # chat model
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
-                               temperature=0.3, top_p=0.2)
+                               temperature=0.2, top_p=0.1)
 
 # function that creates context from top 3 similarities 
 
@@ -106,19 +106,20 @@ if "context" not in st.session_state:
     st.session_state.messages.append({"role": "assistant", "content": response.content})
         
 
-
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        
+st.write("DEBUG: st.session_state.context", st.session_state.context)
 
 # Accept user input
 if query := st.chat_input("What is your query?"):
     new_context = HumanMessage(content=augment_prompt_qa(query)) 
     human_message = HumanMessage(content=query)
-    st.write("DEBUG: new context:", new_context)
-    st.write("DEBUG: system message:", human_message)
-    st.write("DEBUG: st.session_state.context", st.session_state.context)
+    # st.write("DEBUG: new context:", new_context)
+    # st.write("DEBUG: system message:", human_message)
+    # st.write("DEBUG: st.session_state.context", st.session_state.context)
 
     st.session_state.context.append(new_context)
     st.session_state.context.append(human_message)
