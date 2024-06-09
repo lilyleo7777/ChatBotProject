@@ -70,7 +70,8 @@ def augment_prompt_qa(query):
     results = index_qa2.query(
             top_k=3,
             vector=q_embedding,
-            include_values=True
+            include_values=False,
+            include_metadata = True
         )
     
     st.write("DEBUG: Pinecone Query Results:", results)
