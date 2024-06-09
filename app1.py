@@ -116,6 +116,8 @@ for message in st.session_state.messages:
 if query := st.chat_input("What is your query?"):
     new_context = HumanMessage(content=augment_prompt_qa(query)) 
     human_message = HumanMessage(content=query)
+    st.write("DEBUG: new context:", new_context)
+    st.write("DEBUG: system message:", human_message)
     
     st.session_state.context.append(new_context)
     st.session_state.context.append(human_message)
