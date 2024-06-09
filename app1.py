@@ -16,7 +16,7 @@ import random
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
+# os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
