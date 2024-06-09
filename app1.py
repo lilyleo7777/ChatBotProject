@@ -13,7 +13,7 @@ from pinecone import Pinecone, ServerlessSpec
 import time
 import pinecone
 import random
-import Pinecone
+
 
 
 # Set up the environment variable for API key
