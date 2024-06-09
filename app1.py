@@ -74,9 +74,9 @@ def augment_prompt_qa(query):
         )
     
     st.write("DEBUG: Pinecone Query Results:", results)
-    top_3 = [item["metadata"]['text'] for item in results['matches']]
+    # top_3 = [item["metadata"]['text'] for item in results['matches']]
 
-    # top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
+    top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
     st.write("DEBUG: Top 3 Matches:", top_3)
 
     source_knowledge = '\n'.join(top_3)
