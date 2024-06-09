@@ -26,10 +26,10 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 # encode_kwargs = {'normalize_embeddings': False}
 # embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
 
-embedding_model = SentenceTransformer('BAAI/bge-large-en-v1.5',)
+# embedding_model = SentenceTransformer('BAAI/bge-large-en-v1.5',)
 
-q = "what is ADHD?"
-q_embedding = embedding_model.encode(q , normalize_embeddings=False)
+# q = "what is ADHD?"
+# q_embedding = embedding_model.encode(q , normalize_embeddings=False)
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
