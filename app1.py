@@ -1,19 +1,17 @@
-
 import streamlit as st
 import os
 import google.generativeai as genai
-from langchain_google_genai import ChatGoogleGenerativeAI
-# from langchain_google_genai import GoogleGenerativeAIEmbeddings
-# from langchain.schema import HumanMessage
-# #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
-from langchain_pinecone import Pinecone as PineconeVectorStore 
-from langchain_community.embeddings import HuggingFaceEmbeddings
-# from langchain.text_splitter import CharacterTextSplitter
-from pinecone import Pinecone, ServerlessSpec
 import time
 import pinecone
 import random
-
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_pinecone import PineconeVectorStore 
+from pinecone import Pinecone, ServerlessSpec
+# from langchain_google_genai import GoogleGenerativeAIEmbeddings
+# from langchain.schema import HumanMessage
+# #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain.text_splitter import CharacterTextSplitter
 
 
 # Set up the environment variable for API key
@@ -22,24 +20,23 @@ os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
-modelPath = "BAAI/bge-large-en-v1.5"
-model_kwargs = {'device': 'cpu'}
-encode_kwargs = {'normalize_embeddings': False}
-embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
+# modelPath = "BAAI/bge-large-en-v1.5"
+# model_kwargs = {'device': 'cpu'}
+# encode_kwargs = {'normalize_embeddings': False}
+# embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
 
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
-
-
 index_name_qa2 = 'adhd-qa2'
-
 index_qa2 = pc.Index(index_name_qa2)
+
+
 # time.sleep(1)
 
 # #creating vectorstore that holds FAQ doc embeddings 
-text_field = "text"  # the metadata field that contains our text
-vectorstore_qa2 = PineconeVectorStore(index_qa2, embedding_model, text_field)
+# text_field = "text"  # the metadata field that contains our text
+# vectorstore_qa2 = PineconeVectorStore(index_qa2, embedding_model, text_field)
 
 # chat model
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
