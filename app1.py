@@ -9,7 +9,7 @@ from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone, ServerlessSpec
 # import logging
 # from langchain_google_genai import GoogleGenerativeAIEmbeddings
-# from langchain.schema import HumanMessage
+from langchain.schema import HumanMessage
 # #from langchain_community.vectorstores import Pinecone as PineconeVectorStore
 #from langchain_community.embeddings import HuggingFaceEmbeddings
 # from langchain.text_splitter import CharacterTextSplitter
