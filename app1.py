@@ -31,6 +31,12 @@ pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name_qa2 = 'adhd-qa2'
 index_qa2 = pc.Index(index_name_qa2)
 
+# index.query(
+#     namespace="example-namespace",
+#     vector=[0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3],
+#     top_k=3,
+#     include_values=True
+# )
 
 # time.sleep(1)
 
