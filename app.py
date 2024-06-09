@@ -6,7 +6,7 @@ import time
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain.schema import HumanMessage
-from langchain.vectorstores import Pinecone 
+from langchain_pinecone import Pinecone   # Updated import
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
