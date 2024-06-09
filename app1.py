@@ -24,16 +24,6 @@ os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
-# modelPath = "BAAI/bge-large-en-v1.5"
-# model_kwargs = {'device': 'cpu'}
-# encode_kwargs = {'normalize_embeddings': False}
-# embedding_model = HuggingFaceEmbeddings(model_name=modelPath, model_kwargs=model_kwargs, encode_kwargs=encode_kwargs)
-
-# embedding_model = SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
-
-# q = "what is ADHD?"
-# q_embedding = embedding_model.embed_query(q)
-
 
 @st.cache_resource
 def load_embedding_model():
@@ -47,6 +37,12 @@ pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name_qa2 = 'adhd-qa2'
 index_qa2 = pc.Index(index_name_qa2)
 
+queried = index_qa2.query(
+    vector = q_embedding,
+    top_k=3,
+    include_values=False,
+    include_metadata=True
+)
 
 # index.query(
 #     namespace="example-namespace",
@@ -65,10 +61,16 @@ index_qa2 = pc.Index(index_name_qa2)
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
                                temperature=0.3, top_p=0.2)
 
-# #function that creates context from top 3 similarities 
+#function that creates context from top 3 similarities 
 # def augment_prompt_qa(query: str):
 #     # get top 3 results from knowledge base
-#     results = vectorstore_qa2.similarity_search(query, k=3)
+#     q_embedding = embedding_model.embed_query(query)
+#     results = index_qa2.query(
+#         namespace="example-namespace",
+#         vector= q,
+#         top_k=3,
+#         include_values=True
+#     )
 #     # get the text from the results
 #     source_knowledge = "\n".join([x.page_content for x in results])
 #     # feed into an augmented prompt
