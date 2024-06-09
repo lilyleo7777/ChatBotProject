@@ -96,8 +96,8 @@ response = model(context)
 context.append(response)
 st.markdown(response.content)
 
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+# if "chat_history" not in st.session_state:
+#     st.session_state.chat_history = []
 
 query = st.text_input("Your query:")
 
@@ -106,13 +106,14 @@ if query:
     new_context = HumanMessage(content=augment_prompt_qa(query))
     context.append(new_context)
     context.append(human_message)
-    st.session_state.chat_history.append(human_message)
+    # st.session_state.chat_history.append(human_message)
 
     response = model(context)
     context.append(response)
-    st.session_state.chat_history.append(response)
+    # st.session_state.chat_history.append(response)
 
     st.markdown(response.content)
 
-for message in st.session_state.chat_history:
-    st.markdown(message.content)
+# for message in st.session_state.chat_history:
+#     st.markdown(message.content)
+
