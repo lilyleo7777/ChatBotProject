@@ -111,10 +111,13 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         
-st.write("DEBUG: st.session_state.context", st.session_state.context)
+# st.write("DEBUG: st.session_state.context", st.session_state.context)
 
 # Accept user input
 if query := st.chat_input("What is your query?"):
+    with st.chat_message("user"):
+        st.markdown(query)
+        
     new_context = HumanMessage(content=augment_prompt_qa(query)) 
     human_message = HumanMessage(content=query)
     # st.write("DEBUG: new context:", new_context)
@@ -129,13 +132,15 @@ if query := st.chat_input("What is your query?"):
     # st.write("DEBUG: Query:", query)
     # st.write("DEBUG: Response:", response)
         
-    with st.chat_message("user"):
-        st.markdown(query)
-        
+    
     response = model(st.session_state.context)
     st.session_state.context.append(response)
     st.session_state.messages.append({"role": "assistant", "content": response.content})
 
     with st.chat_message("assistant"):
-        st.markdown(response.content)
+        for i in range(len(response.content)):
+            st.markdown(response.content[:i+1])
+            time.sleep(0.05)
+        # st.markdown(response.content)
     # st.session_state.messages.append({"role": "assistant", "content": response})
+
