@@ -11,18 +11,13 @@ from langchain.text_splitter import CharacterTextSplitter
 from pinecone import Pinecone, ServerlessSpec
 import time
 from langchain_community.vectorstores import Pinecone as PineconeVectorStore
+from langchain_pinecone import Pinecone as PineconeVectorStore
 
 # Set up the environment variable for API key
 os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 os.environ["PINECONE_API_KEY"] = st.secrets["PINECONE_API_KEY"]
 
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-
-#loading FAQ document 
-loader = TextLoader("./ADHDFAQ.txt") 
-documents = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=10)
-docs = text_splitter.split_documents(documents)
 
 #creating embeddings using HuggingFace
 modelPath = "BAAI/bge-large-en-v1.5"
@@ -39,24 +34,12 @@ pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
 index_name_qa2 = 'adhd-qa2'
 
-#connecting to index
-existing_indexes = [index_info["name"] for index_info in pc.list_indexes()]
-if index_name_qa2 not in existing_indexes:
-    # if does not exist, create index
-    pc.create_index(
-        index_name_qa2,
-        dimension=1024,  # dimensionality of our embedding model
-        metric='cosine',
-        spec= ServerlessSpec(cloud="aws", region="us-east-1")
-    )
-    while not pc.describe_index(index_name_qa2).status['ready']:
-        time.sleep(1)
 index_qa2 = pc.Index(index_name_qa2)
 time.sleep(1)
 
 #creating vectorstore that holds FAQ doc embeddings 
 text_field = "text"  # the metadata field that contains our text
-vectorstore_qa2 = PineconeVectorStore(index_qa2, embedding_model.embed_query, text_field)
+vectorstore_qa2 = PineconeVectorStore(index_qa2, embedding_model, text_field)
 
 # chat model
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
@@ -81,11 +64,6 @@ def augment_prompt_qa(query: str):
 # Streamlit app layout
 st.title("ADHD Specialist Australia Clinic Chatbot")
 
-# if "chat_history" not in st.session_state:
-#     st.session_state.chat_history = []
-
-
-
 inital_system_message = "Your role is an assistant for an ADHD specialist clinic called \
 ADHD Specialists Australia to answer questions people have regarding the clinic and ADHD. \
 You first welcome me and ask how you can help me."
@@ -97,8 +75,7 @@ if "context" not in st.session_state:
     st.session_state.context.append(response)
     with st.chat_message("Assistant"):
         st.markdown(response.content)
-
-
+        
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -125,4 +102,3 @@ if query := st.chat_input("What is your query?"):
     for word in response.content.split():
       st.markdown(word + " ")
       time.sleep(0.05)
-
