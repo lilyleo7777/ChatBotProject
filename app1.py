@@ -29,7 +29,7 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 embedding_model = SentenceTransformer('BAAI/bge-large-en-v1.5',)
 
 q = "what is ADHD?"
-q_embedding = sent_transformer.encode(q , normalize_embeddings=False)
+q_embedding = embedding_model.encode(q , normalize_embeddings=False)
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
