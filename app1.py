@@ -101,8 +101,8 @@ if "context" not in st.session_state:
     st.session_state.context = [HumanMessage(content = inital_system_message)]
     response = model(st.session_state.context)
     st.session_state.context.append(response)
-    with st.chat_message("assistant"):
-        st.markdown(response.content)
+    # with st.chat_message("assistant"):
+    #     st.markdown(response.content)
     st.session_state.messages.append({"role": "assistant", "content": response.content})
         
 
