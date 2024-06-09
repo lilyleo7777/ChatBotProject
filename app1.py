@@ -56,6 +56,7 @@ model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
                                temperature=0.3, top_p=0.2)
 
 # function that creates context from top 3 similarities 
+
 def augment_prompt_qa(query):
     # get top 3 results from knowledge base
     q_embedding = embedding_model.embed_query(query)
@@ -119,9 +120,9 @@ if query := st.chat_input("What is your query?"):
   # st.session_state.context.append(human_message)
     st.session_state.messages.append({"role": "user", "content": query})
     response = augment_prompt_qa(query)
+    st.write("DEBUG: Query:", query)
+    st.write("DEBUG: Response:", response)
         
-
-  # Display user message in chat message container
     with st.chat_message("user"):
         st.markdown(query)
 
