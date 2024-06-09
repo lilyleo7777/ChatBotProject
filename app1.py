@@ -136,11 +136,19 @@ if query := st.chat_input("What is your query?"):
     response = model(st.session_state.context)
     st.session_state.context.append(response)
     st.session_state.messages.append({"role": "assistant", "content": response.content})
-
-    with st.chat_message("assistant"):
-        for i in range(len(response.content)):
-            st.markdown(response.content[:i+1])
-            time.sleep(0.05)
-        # st.markdown(response.content)
-    # st.session_state.messages.append({"role": "assistant", "content": response})
+    
+    words = response.content.split()
+    message_placeholder = st.empty()
+    displayed_text = ""
+    for word in words:
+        displayed_text += word + " "
+        message_placeholder.markdown(displayed_text)
+        time.sleep(0.2)
+    message_placeholder.markdown(response.content)
+    # with st.chat_message("assistant"):
+    #     for i in range(len(response.content)):
+    #         st.markdown(response.content[:i+1])
+    #         time.sleep(0.05)
+    #     # st.markdown(response.content)
+    # # st.session_state.messages.append({"role": "assistant", "content": response})
 
