@@ -39,7 +39,8 @@ genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 def load_embedding_model():
     return SentenceTransformerEmbeddings(model_name="BAAI/bge-large-en-v1.5")
 embedding_model = load_embedding_model()
-
+q = "what is ADHD?"
+q_embedding = embedding_model.embed_query(q)
 
 # # Initialize Pinecone
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
