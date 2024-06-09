@@ -65,7 +65,7 @@ time.sleep(1)
 
 #creating vectorstore that holds FAQ doc embeddings 
 text_field = "text"  # the metadata field that contains our text
-vectorstore_qa2 = Pinecone(index_qa2, embedding_model.embed_query, text_field)
+vectorstore_qa2 = PineconeVectorStore(index_qa2, embedding_model.embed_query, text_field)
 
 # chat model
 model = ChatGoogleGenerativeAI(model="models/gemini-1.0-pro-latest",
@@ -98,7 +98,7 @@ st.markdown(response.content)
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-    
+
 query = st.text_input("Your query:")
 
 if query:
@@ -116,4 +116,3 @@ if query:
 
 for message in st.session_state.chat_history:
     st.markdown(message.content)
-
