@@ -137,20 +137,17 @@ if query := st.chat_input("What is your query?"):
     st.session_state.context.append(response)
     st.session_state.messages.append({"role": "assistant", "content": response.content})
 
-    # Display response with typing effect
-    message_placeholder = st.empty()
-    displayed_text = ""
-
-    for char in response.content:
-        displayed_text += char
-        message_placeholder.markdown(displayed_text)
-        time.sleep(0.05)  # Adjust typing speed here
-
-    # Ensure full response is rendered with HTML formatting
-    message_placeholder.markdown(response.content)
-
     with st.chat_message("assistant"):
-        st.markdown(response.content)
+        message_placeholder = st.empty()
+        displayed_text = ""
+
+        for char in response.content:
+            displayed_text += char
+            message_placeholder.markdown(displayed_text)
+            time.sleep(0.05)  # Adjust typing speed here
+
+        # Ensure full response is rendered with HTML formatting
+        message_placeholder.markdown(response.content)
 
 
     
