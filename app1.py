@@ -131,5 +131,5 @@ if query := st.chat_input("What is your query?"):
     st.session_state.messages.append({"role": "assistant", "content": response.content})
 
     with st.chat_message("assistant"):
-        st.markdown(response)
+        st.markdown(response.content)
     st.session_state.messages.append({"role": "assistant", "content": response})
