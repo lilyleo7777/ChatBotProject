@@ -41,7 +41,8 @@ def augment_prompt_qa(query):
             include_metadata = True)
     top_3 = [match['metadata'].get('text', 'No text metadata found') for match in results['matches']]
     source_knowledge = '\n'.join(top_3)
-    augmented_prompt = f"""Using the contexts below, answer the query.
+    augmented_prompt = f"""Using the contexts below, answer the query. If you are unsure\
+    or don’t have enough information to provide a confident answer, simply say “I do not have that information sorry.”
 
     Contexts:
     {source_knowledge}
